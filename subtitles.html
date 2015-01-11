@@ -1,0 +1,130 @@
+﻿<html><head><meta charset="UTF-8"></head>
+	<body>
+		<!-- here you can edit the list of subtitles -->
+		<ol id='list'>
+			<li>Press enter to begin!</li>
+			<li>Hi! Press enter again!</li>
+			<li>You can go back with backspace!</li>
+			<li>You can also go back with</br> the left arrow and up arrow.</li>
+			<li>And you can also go forward</br> with space, right arrow and down arrow.</li>
+			<li>Are you confident with your ability</br> to navigate the subtitles?</li>
+			<li>Awesome! I'll tell you more if you press <code>F11</code></li>
+			<li>Well all what <code>F11</code> does is to toggle fullscreen...</li>
+			<li>Now I'll tell you what really happenst</li>
+			<li>The subtitles are in a list</li>
+			<li>If you go back to the first page, you can see this list</li>
+			<li>From the first page, you can go to any position by clicking on it</li>
+			<li>Press <code>Esc</code> to view the list, </br> after then come back here by clicking on item 13</li>
+			<li>You can edit this list by opening this file with notepad</li>
+			<li>It's a standard <a target="_blank" href="http://www.w3schools.com/htmL/html_lists.asp"><b>HTML</b> orderred list.</a></li>
+			<li>Or you can also edit it with a webpage editor</li>
+			<li>And the subtitles can be styled in any way</li>
+			<li>You</br>can</br>have</br>stuff</br>on multiple lines</br></li>
+			<li><i>Italic</i> <b>Bold</b> <u>Underline</u> <s>Strikeout</s></li>
+			<li><span style="color:red"> Colors </span> can also be used</li>
+			<li>Images are also possible!</li>
+			<li>We all use <img src="http://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" style="width:200px" 
+			    alt="Google"></img> every day</li>
+			<li>And that's not all!</li>
+			<li>This is just the <small>tip</small> of the <big>iceberg!</big></li>
+			<li>Warning! The next subtitle is empty!</li>
+			<li></li>
+			<li>If you take a look in the file</li>
+			<li>You can easily edit it...</li>
+			<li>This document uses UTF-8 Encoding</li>
+			<li>And it can include characters</br> from other languages</li>
+			<li>Cabbage! Káposzta! Varză!</li>
+			<li>I recommend using the UTF-8 Encoding</li>
+			<li>The encoding can be specified in any decent text editor...</li>
+			<li>Well that's all!</li>
+			<li>Bye!</li>
+		</ol>
+		
+		<!-- here you can edit the display style -->
+		<style>
+			body, html{padding:0;margin:0;width:100%;height:100%;color:white;background:black;}
+			.lastitem{background:#421;}
+			body ol li:hover{background:#444;cursor:pointer}
+			
+			#subtitle{					/* edit the subtitle style here */
+				position:absolute;
+				bottom:40px;
+				width:100%;
+				text-align:center;
+				font-family:serif;
+				font-size:50px;
+			}
+		</style>
+		
+		<!-- below is the subtitle logic -->
+		<script>
+			var listElement;
+			var subtitleElement;
+			var lastPosition = -1;
+			var position = -1;
+			
+			function nextSubtitle() { setPosition(position + 1); }
+			function previousSubtitle() { setPosition(position - 1); }
+		
+			function setPosition(index)
+			{
+				lastPosition = position;
+				position = index;
+				var maxpos = listElement.children.length - 1;
+				if (position<-1) position = maxpos;
+				if (position>maxpos) position = -1;
+				updateDisplay();
+			}
+			
+			function updateDisplay() {
+				if (position==-1){
+					listElement.style.display = "block";
+					subtitleElement.style.display = "none";
+					document.body.style.cursor = null;
+				}
+				else{
+					listElement.style.display = "none";
+					subtitleElement.style.display = "block";
+					document.body.style.cursor = "none";
+					subtitleElement.innerHTML = listElement.children[position].innerHTML;
+				}
+			}
+			
+			function reset()
+			{
+				setPosition(-1);
+				for (var i=0; i<listElement.children.length; i++)
+				{
+					var item = listElement.children[i];
+					item.setAttribute('id',i);
+					item.onclick=function(){setPosition(Number(this.getAttribute('id')));}
+					if (i==lastPosition) item.setAttribute('class','lastitem'); else item.setAttribute('class', null);
+				}
+			}
+			
+			window.addEventListener('keydown', function(event) {
+				  switch (event.keyCode) {
+					case 37: case 38: case 33: if (position>=0) previousSubtitle(); break; //up | left | pageup
+					case 39: case 40: case 34: if (position>=0) nextSubtitle(); break; //down | right | pagedown
+					case 13: case 32: if (position==-1&&lastPosition !=-1) setPosition(lastPosition); 
+					                  else nextSubtitle(); break;  //enter | space
+					case 8: if (position==-1) setPosition(lastPosition); else previousSubtitle(); break; //backspace
+					case 27: reset(); break; // escape
+					default: console.log(event.keyCode); break;
+				}
+			});
+			
+			window.onload = function(){
+				listElement = document.getElementById('list');
+				if (listElement == null) listElement = document.getElementsByTagName('ol')[0];
+				if (listElement == null) listElement = document.getElementsByTagName('ul')[0];
+				if (listElement == null) alert('script: I was not able to find the list of subtitles, document was corrupted');
+				subtitleElement = document.createElement('span');
+				subtitleElement.textContent = "press enter to begin";
+				subtitleElement.setAttribute('id','subtitle');
+				document.body.appendChild(subtitleElement);
+				reset();
+			}
+		</script>
+	</body>
+</html>
